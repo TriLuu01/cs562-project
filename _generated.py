@@ -20,7 +20,8 @@ def query():
     password = '' #load from file
     dbname = os.getenv('DBNAME')
 
-    conn = psycopg2.connect(host = 'localhost', dbname = 'postgres', user= "postgres", password="0812", port = 5432, cursor_factory=psycopg2.extras.DictCursor)
+    conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres",
+                            password="postgres", port=5432, cursor_factory=psycopg2.extras.DictCursor)
     cur = conn.cursor()
     cur.execute("SELECT * FROM sales")
     
