@@ -1,4 +1,4 @@
-
+import sys
 import os
 import psycopg2
 import psycopg2.extras
@@ -11,12 +11,39 @@ def load_extended_sql_data(filename):
     with open(filename, 'r') as file:
         data = json.load(file)
         return data
+def exist(row, V, table):
+    for entry in table:
+        match = len(V)
+        for j in V:
+            if row[j] == entry[j]:
+                match -=1
+                if match == 0:
+                    return True
+    return False
+def createEntry(row, V, F):
+    mf_struct = {}
+    for i in V:
+        mf_struct[i] = None
+    for j in F:
+        agg = j.split('_')[0]
+        match agg:
+            case "min":
+                mf_struct[j] = sys.float_info.min
+            case "max":
+                mf_struct[j] = sys.float_info.max
+            case "avg":
+                mf_struct[j] = [0,0] #sum, count
+            case _:
+                mf_struct[j] = 0
+    for i in V:
+        mf_struct[i] = row[i]
+    return mf_struct
 
-H_table = {}
 def query():
     load_dotenv()
+    print("Current Working Directory:", os.getcwd())
     #Load the esql data, this would be generated directly from generate
-    data = load_extended_sql_data('data.json')
+    data = load_extended_sql_data('./cs562-project/data.json')
     # print("Projected Attributes (S):", data['S'])
     S = data['S']
     # print("Number of Grouping Variables (n):", data['n'])
@@ -69,15 +96,20 @@ else
 }
 if a_row.state = ‘NY’
     '''
-    
+    H_table = []
+    #Start scanning for group by
+    for row in cur:
+        if (len(H_table) == 0):
+            H_table.append(createEntry(row, V, F))
+        #check if it already exist
+        if exist(row, V, H_table) == False:
+            H_table.append(createEntry(row,V,F))
     #Start scanning for n grouping variables (look at the F table) -> fill the group by variables by scanning 
 
 
 
     
     
-    for i in H_table:
-        print(i)
     return H_table
 
 def main():
