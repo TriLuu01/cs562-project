@@ -1,0 +1,8 @@
+{
+  "S": ["cust", "sum_x_quant", "sum_y_quant", "sum_z_quant"],
+  "n": 3,
+  "V": ["cust"],
+  "F": ["sum_x_quant", "sum_y_quant", "sum_z_quant"],
+  "Pred": [{ "x_state": "NY" }, { "y_state": "CT" }, { "z_state": "NJ" }],
+  "H": []
+}

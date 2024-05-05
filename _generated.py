@@ -12,38 +12,77 @@ def load_extended_sql_data(filename):
         data = json.load(file)
         return data
 
-
+H_table = {}
 def query():
     load_dotenv()
+    #Load the esql data, this would be generated directly from generate
+    data = load_extended_sql_data('data.json')
+    # print("Projected Attributes (S):", data['S'])
+    S = data['S']
+    # print("Number of Grouping Variables (n):", data['n'])
+    n = data['n']
+    # print("Group By Attributes (V):", data['V'])
+    V = data['V']
+    # print("Aggregate Functions (F vector):", data['F'])
+    F = data['F']
+    # print("Predicate Vector:", data['Pred'])
+    Pred = data['Pred']
+    # print("Having Conditions:", data['H'])
+    H = data['H']
 
-    user = os.getenv('USER')
-    password = '' #load from file
+    #Connect our environment to PostGresql
+    user = os.getenv('USERNAME')
+    password = os.getenv('PASSWORD')
     dbname = os.getenv('DBNAME')
 
     conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres",
                             password="postgres", port=5432, cursor_factory=psycopg2.extras.DictCursor)
     cur = conn.cursor()
     cur.execute("SELECT * FROM sales")
+    #define variables needed 
+    aggregate = {'sum', 'max', 'min', 'count', 'avg'}
+    #Populate the mf structure by group by and grouping variables
+    '''
+    while {
+	//read from table sales, then compute all sum
+
+	//doing a table scan for grouping variable 1
+}
+
+while{
+	//table scan for grouping variable 2
+	
+}
+while{
+	//table scan for grouping variable 3
+}
+ex: 
+    while (1)
+{
+read(a_row)
+if (end of table ) break;
+if a_row[cust] is in H_table
+  	H_table[i].sum_x_q += a_row_quant;
+else 
+	H_table[i].cust = a_row.cust
+	H_table[i].sum_x_q = a_row.quant;
+}
+if a_row.state = ‘NY’
+    '''
     
-    _global = []
+    #Start scanning for n grouping variables (look at the F table) -> fill the group by variables by scanning 
+
+
+
     
-    for row in cur:
-        if row['quant'] > 10:
-            _global.append(row)
     
-    
-    return tabulate.tabulate(_global,
-                        headers="keys", tablefmt="psql")
+    for i in H_table:
+        print(i)
+    return H_table
 
 def main():
     # Assuming the filename is 'data.json'
-    data = load_extended_sql_data('data.json')
-    print("Projected Attributes (S):", data['S'])
-    print("Number of Grouping Variables (n):", data['n'])
-    print("Group By Attributes (V):", data['V'])
-    print("Aggregate Functions (F vector):", data['F_vector'])
-    print("Predicate Vector:", data['theta_vector'])
-    print("Having Conditions:", data['having'])
+    
     print(query())
     
 if "__main__" == __name__:
