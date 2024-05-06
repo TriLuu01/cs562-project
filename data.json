@@ -1,8 +1,12 @@
 {
-  "S": ["prod", "sum_1_quant", "sum_2_quant", "sum_3_quant"],
-  "n": 3,
-  "V": ["prod"],
-  "F": ["sum_1_quant", "sum_2_quant", "sum_3_quant"],
-  "Pred": [["1_month == 1"], ["2_month == 2"], ["3_month == 3"]],
+  "S": ["prod", "month", "count_1_*", "count_2_*"],
+  "n": 2,
+  "V": ["prod", "month"],
+  "F": ["count_1_*", "count_2_*"],
+  "Pred": [
+    ["year == 2016", "month > 1", "month < 12"],
+    ["1_prod == prod", "1_month == month -1", "1_quant > avg(quant)"],
+    ["2_prod == prod", "2_month == month+1", "2_quant > avg(quant)"]
+  ],
   "H": []
 }

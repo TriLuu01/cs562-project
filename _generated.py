@@ -39,8 +39,14 @@ def createEntry(row, V, F):
     for i in V:
         mf_struct[i] = row[i]
     return mf_struct
+def contains_aggregate(s): #use regular expression to check for aggregates
+    pattern = r'\b(avg|sum|count|min|max)\s*\(([^)]+)\)'
+    if re.search(pattern, s, re.IGNORECASE):
+        return True
+    else:
+        return False
 
-def meet_conditions(row, conditions, initial ): #missing checking for aggregate
+def meet_conditions_initial(row, conditions, initial): #missing checking for aggregate
     for i in conditions:
         parts = i.split()
         if (len(parts) == 3 and initial):
@@ -50,10 +56,26 @@ def meet_conditions(row, conditions, initial ): #missing checking for aggregate
                 e = eval(f"'{row[parts[0]]}' {parts[1]} {parts[2]}")
             if not e:
                 return False
+    return True
+def meet_conditions(row, conditions, h_row, set):
+    for j in set:
+        exec(f"{j} = h_row['{j}']")
+    for i in conditions:
+        parts = i.split()
+        if (len(parts) == 3):
+            val = parts[2]
+            try:
+                #check for aggregate 
+                if contains_aggregate(parts[2]):
+                    val = aggregate[parts[2].split('(')[0]]
+                e = eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {val}")
+            except:
+                e = eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} {val}")
         elif (len(parts) == 3):
             try:
                 e = eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {parts[2]}")
             except:
+    
                 e = eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} {parts[2]}")
             if not e:
                 return False
@@ -89,6 +111,7 @@ def query():
     cur.execute("SELECT * FROM sales")
     #define variables needed 
     
+    
     #Populate the mf structure by group by and grouping variables
     '''
     while {
@@ -120,6 +143,7 @@ if a_row.state = ‘NY’
     H_table = []
     #Check if we have the 0th grouping variables (original table)
     initial = False if Pred[0][0][0].isdigit() else True
+        
         
     #Start scanning for group by attributes
     for row in cur:
@@ -163,6 +187,9 @@ if a_row.state = ‘NY’
                         H_table[index][i] = min(H_table[index][i], row['quant'])
                     case 'max':
                         H_table[index][i] = max(H_table[index][i], row['quant'])
+        if (predicate[0] == 'avg'):
+            for r in H_table:
+                r[i] = r[i][0] / r[i][1]
     _global = []
     for index, entry in enumerate(H_table):
         _global.append(entry)
