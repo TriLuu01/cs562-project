@@ -1,13 +1,8 @@
 {
-  "S": ["prod", "month", "count_1_*", "count_2_*"],
-  "n": 2,
-  "V": ["prod", "month"],
-  "F": ["count_1_*", "count_2_*"],
-  "Pred": [
-    ["day < 20"],
-    ["1_state == 'NY'"],
-    ["2_state == 'CT'"],
-    ["3_state == 'NJ'"]
-  ],
+  "S": ["prod", "sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "n": 3,
+  "V": ["prod"],
+  "F": ["sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "Pred": [["1_month == 1"], ["2_month == 2"], ["3_month == 3"]],
   "H": []
 }
