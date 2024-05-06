@@ -50,7 +50,11 @@ def meet_conditions(row, conditions, initial ):
             if not e:
                 return False
         elif (len(parts) == 3):
-            if not eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {parts[2]}"):
+            try:
+                e = eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {parts[2]}")
+            except:
+                eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} '{parts[2]}'")
+            if not e:
                 return False
     return True
             
