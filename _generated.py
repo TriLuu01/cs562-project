@@ -110,7 +110,7 @@ H = data['H']
 def query():
     load_dotenv()
 
-    user = os.getenv('USER')
+    user = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
     dbname = os.getenv('DBNAME')
 
@@ -171,6 +171,9 @@ def query():
                         H_table[index][i] = min(H_table[index][i], row['quant'])
                     case 'max':
                         H_table[index][i] = max(H_table[index][i], row['quant'])
+        if predicate[0] == 'avg':
+            for r in H_table:
+                r[i] = r[i][0] / r[i][1]
     _global = []
     for index, entry in enumerate(H_table):
         _global.append(entry)
