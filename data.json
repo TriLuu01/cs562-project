@@ -1,8 +1,13 @@
 {
-  "S": ["cust", "sum_x_quant", "sum_y_quant", "sum_z_quant"],
+  "S": ["cust", "sum_1_quant", "sum_2_quant", "sum_3_quant"],
   "n": 3,
   "V": ["cust"],
-  "F": ["sum_x_quant", "sum_y_quant", "sum_z_quant"],
-  "Pred": [{ "x_state": "NY" }, { "y_state": "CT" }, { "z_state": "NJ" }],
+  "F": ["sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "Pred": [
+    ["day < 20"],
+    ["1_state == 'NY'"],
+    ["2_state == 'CT'"],
+    ["3_state == 'NJ'"]
+  ],
   "H": []
 }
