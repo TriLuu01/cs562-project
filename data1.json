@@ -1,0 +1,17 @@
+{
+  "S": ["prod", "state", "count_3_*"],
+  "n": 3,
+  "V": ["prod", "state"],
+  "F": ["count_3_quant"],
+  "Pred": [
+    ["1_prod == prod", "1_month == 1_month - 1"],
+    ["2_prod == prod", "2_month == 2_month + 1"],
+    [
+      "3_prod == prod",
+      "3_month == month",
+      "3_quant > avg(1_quant)",
+      "3_quant < avg(2_quant)"
+    ]
+  ],
+  "H": []
+}

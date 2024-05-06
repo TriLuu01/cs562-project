@@ -3,6 +3,6 @@
   "n": 3,
   "V": ["prod"],
   "F": ["sum_1_quant", "sum_2_quant", "sum_3_quant"],
-  "Pred": [["1_month == 1"], ["2_month == 2"], ["3_month == 3"]],
+  "Pred": [["1_state == 'NY'"], ["2_state == 'CT'"], ["3_state == 'NJ'"]],
   "H": []
 }

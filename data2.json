@@ -1,0 +1,13 @@
+{
+  "S": ["cust", "sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "n": 3,
+  "V": ["cust"],
+  "F": ["sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "Pred": [
+    ["day < 20"],
+    ["1_state == 'NY'"],
+    ["2_state == 'CT'"],
+    ["3_state == 'NJ'"]
+  ],
+  "H": []
+}
