@@ -6,8 +6,8 @@ Feel free to use this as the basis for your project. You can use this code as a 
 
 **Note:** Don't forget to copy .env.example to .env and update the values to match your environment.
 
-predicates has to be numbers
+predicates has to be numbers, start with 1
 comparison operators has to be matched to python !=, ==, >, <, >=, <=
 limited to 5 basic aggregate functions
 meet_conditions might not scale for other database, but for sales it's fine
-data.json has to be correct when entered, otherwise the program would not be working
+limited input checking
