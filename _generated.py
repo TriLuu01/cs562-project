@@ -45,8 +45,7 @@ def contains_aggregate(s): #use regular expression to check for aggregates
         return True
     else:
         return False
-
-def meet_conditions_initial(row, conditions, initial): #missing checking for aggregate
+def meet_conditions_initial(row, conditions ): #missing checking for aggregate
     for i in conditions:
         parts = i.split()
         if (len(parts) == 3 and initial):
@@ -71,12 +70,6 @@ def meet_conditions(row, conditions, h_row, set):
                 e = eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {val}")
             except:
                 e = eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} {val}")
-        elif (len(parts) == 3):
-            try:
-                e = eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {parts[2]}")
-            except:
-    
-                e = eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} {parts[2]}")
             if not e:
                 return False
     return True
@@ -111,7 +104,6 @@ def query():
     cur.execute("SELECT * FROM sales")
     #define variables needed 
     
-    
     #Populate the mf structure by group by and grouping variables
     '''
     while {
@@ -144,7 +136,6 @@ if a_row.state = ‘NY’
     #Check if we have the 0th grouping variables (original table)
     initial = False if Pred[0][0][0].isdigit() else True
         
-        
     #Start scanning for group by attributes
     for row in cur:
         if initial and not meet_conditions(row, Pred[0], initial):
@@ -154,11 +145,6 @@ if a_row.state = ‘NY’
         #check if it already exist
         if isinstance(exist(row, V, H_table),bool):
             H_table.append(createEntry(row,V,F))
-        aggregate['sum'] += row['quant']
-        aggregate['count'] += 1
-        aggregate['max'] = max(aggregate['max'],row['quant'])
-        aggregate['min'] = min(aggregate['min'],row['quant'])
-        aggregate['avg'] = [aggregate['avg'][0] + row['quant'], aggregate['avg'][1]+1]
     #Start scanning for n grouping variables (look at the F table) -> fill the group by variables by scanning 
     
     
