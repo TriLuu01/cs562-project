@@ -39,11 +39,26 @@ def createEntry(row, V, F):
         mf_struct[i] = row[i]
     return mf_struct
 
+def meet_conditions(row, conditions, initial ):
+    for i in conditions:
+        parts = i.split()
+        if (len(parts) == 3 and initial):
+            try:
+                e = eval(f"{row[parts[0]]} {parts[1]} {parts[2]}")
+            except:
+                e = eval(f"'{row[parts[0]]}' {parts[1]} '{parts[2]}'")
+            if not e:
+                return False
+        elif (len(parts) == 3):
+            if not eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {parts[2]}"):
+                return False
+    return True
+            
 def query():
     load_dotenv()
     print("Current Working Directory:", os.getcwd())
     #Load the esql data, this would be generated directly from generate
-    data = load_extended_sql_data('./cs562-project/data.json')
+    data = load_extended_sql_data('data.json')
     # print("Projected Attributes (S):", data['S'])
     S = data['S']
     # print("Number of Grouping Variables (n):", data['n'])
@@ -97,15 +112,20 @@ else
 if a_row.state = ‘NY’
     '''
     H_table = []
-    #Start scanning for group by
+    #Check if we have the 0th grouping variables (original table)
+    initial = False if Pred[0][0][0].isdigit() else True
+        
+    #Start scanning for group by attributes
     for row in cur:
+        if initial and not meet_conditions(row, Pred[0], initial):
+            continue
         if (len(H_table) == 0):
             H_table.append(createEntry(row, V, F))
         #check if it already exist
         if exist(row, V, H_table) == False:
             H_table.append(createEntry(row,V,F))
     #Start scanning for n grouping variables (look at the F table) -> fill the group by variables by scanning 
-
+    
 
 
     
