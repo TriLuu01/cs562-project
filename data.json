@@ -1,12 +1,11 @@
 {
-  "S": ["prod", "month", "count_1_*", "count_2_*"],
+  "S": ["cust", "prod", "state", "avg_1_quant", "avg_2_quant"],
   "n": 2,
-  "V": ["prod", "month"],
-  "F": ["count_1_*", "count_2_*"],
+  "V": ["cust", "prod", "state"],
+  "F": ["avg_1_quant", "avg_2_quant"],
   "Pred": [
-    ["year == 2016", "month > 1", "month < 12"],
-    ["1_prod == prod", "1_month == month -1", "1_quant > avg(quant)"],
-    ["2_prod == prod", "2_month == month+1", "2_quant > avg(quant)"]
+    ["1_cust == cust", "1_prod == prod", "1_state == state"],
+    ["2_cust != cust", "2_prod == prod", "2_state == state"]
   ],
   "H": []
 }

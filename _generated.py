@@ -39,13 +39,25 @@ def createEntry(row, V, F):
                 mf_struct[j] = 0
     for i in V:
         mf_struct[i] = row[i]
+    # for j in extra:
+    #     agg = j.split('(')[0]
+    #     match agg:
+    #         case "min":
+    #             mf_struct[j] = sys.float_info.max
+    #         case "max":
+    #             mf_struct[j] = sys.float_info.min
+    #         case "avg":
+    #             mf_struct[j] = [0,0] #sum, count
+    #         case _:
+    #             mf_struct[j] = 0
     return mf_struct
 def contains_aggregate(s): #use regular expression to check for aggregates
     pattern = r'\b(avg|sum|count|min|max)\s*\(([^)]+)\)'
-    if re.search(pattern, s, re.IGNORECASE):
-        return True
+    match = re.search(pattern, s, re.IGNORECASE)
+    if match:
+        return match.group(0)
     else:
-        return False
+        return None
 def meet_conditions_initial(row, conditions ): #missing checking for aggregate
     for i in conditions:
         parts = i.split()
@@ -64,13 +76,17 @@ def meet_conditions(row, conditions, h_row, set):
         parts = i.split()
         if (len(parts) == 3):
             val = parts[2]
+            if val in set:
+                val = h_row[val]
             try:
                 #check for aggregate 
-                if contains_aggregate(parts[2]):
-                    val = aggregate[parts[2].split('(')[0]]
+                a = contains_aggregate(parts[2])
+                if a != None:
+                    val = h_row[a]
+                
                 e = eval(f"{row[parts[0].split('_')[1]]} {parts[1]} {val}")
             except:
-                e = eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} {val}")
+                e = eval(f"'{row[parts[0].split('_')[1]]}' {parts[1]} '{val}'")
             if not e:
                 return False
     return True
@@ -105,12 +121,18 @@ def query():
     cur = conn.cursor()
     cur.execute("SELECT * FROM sales")
     #define variables needed 
-    
+    global extra
+    extra = set()
     #Populate the mf structure by group by and grouping variables
     H_table = []
     #Check if we have the 0th grouping variables (original table)
     initial = False if Pred[0][0][0].isdigit() else True
-        
+    for i in Pred:
+        for j in i:
+            a = contains_aggregate(j)
+            if a != None:
+                extra.add(a)
+
     #Start scanning for group by attributes
     for row in cur:
         if initial and not meet_conditions_initial(row, Pred[0]):
@@ -119,6 +141,32 @@ def query():
         #check if it already exist
         if len(H_table) == 0 or isinstance(exist(row, V, H_table),bool):
             H_table.append(createEntry(row,V,F))
+    #Start scanning for extra attributes
+    # for i in extra:
+    #     #reset cursor
+    #     cur.scroll(0,'absolute')
+    #     predicate = i.split('(')
+    #     for row in cur:
+    #         #if row matches with an entry in H_table, check predicate and compute
+    #         index = exist(row,V,H_table)
+    #         if isinstance(index,int):
+    #             if initial and not meet_conditions_initial(row, Pred[0]):
+    #                 continue
+    #             match predicate[0]:
+    #                 case 'sum':
+    #                     H_table[index][i] += row['quant']
+    #                 case 'count':
+    #                     H_table[index][i] += 1
+    #                 case 'avg':
+    #                     temp = H_table[index][i]
+    #                     H_table[index][i] =  [temp[0] + row['quant'], temp[1] + 1]
+    #                 case 'min':
+    #                     H_table[index][i] = min(H_table[index][i], row['quant'])
+    #                 case 'max':
+    #                     H_table[index][i] = max(H_table[index][i], row['quant'])
+    #     if (predicate[0] == 'avg'):
+    #         for r in H_table:
+    #             r[i] = r[i][0] / r[i][1]
     #Start scanning for n grouping variables (look at the F table) -> fill the group by variables by scanning 
     
     
@@ -148,13 +196,14 @@ def query():
                         H_table[index][i] = max(H_table[index][i], row['quant'])
         if (predicate[0] == 'avg'):
             for r in H_table:
+                if r[i][1] == 0:
+                    r[i] = 0
                 r[i] = r[i][0] / r[i][1]
+    
+    
     _global = []
     for index, entry in enumerate(H_table):
         _global.append(entry)
-    
-
-
     
     
     return tabulate.tabulate(_global,

@@ -1,0 +1,8 @@
+{
+  "S": ["prod", "sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "n": 3,
+  "V": ["prod"],
+  "F": ["sum_1_quant", "sum_2_quant", "sum_3_quant"],
+  "Pred": [["1_month == 1"], ["2_month == 2"], ["3_month == 3"]],
+  "H": []
+}
