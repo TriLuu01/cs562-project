@@ -59,32 +59,7 @@ def meet_conditions(row, conditions, initial ): #missing checking for aggregate
                 return False
     return True
 
-def read_input():
-  # S like cust, sum_1_quant, sum_2_quant, sum_3_quant
-  S = input("SELECT ATTRIBUTE(S): ").replace(" ", "").split(",")
-
-  # n is an integer
-  n = int(input("NUMBER OF GROUPING VARIABLES(n): ").replace(" ", "").strip())
-
-  # V like cust, prod
-  V = input("GROUPING ATTRIBUTES(V): ").replace(" ", "").split(",")
-
-  # F like sum_1_quant, avg_1_quant, sum_2_quant, sum_3_quant, avg_3_quant
-  F = input("F-VECT([F]): ").replace(" ", "").split(",")
-
-  # Pred is all the predicates, so enter comma separated conditions
-  # Press enter when you are done with predicates
-  # Note: 1st condition can be the where clause (0th grouping variable)
-  Pred = []
-  data = input("SELECT CONDITION-VECT([σ]): ").strip().replace(", ", ",")
-  while data:
-    Pred.extend([data.strip().replace(", ", ",").split(",")])
-    data = input("SELECT CONDITION-VECT([σ]): ")
-    
-  # H like sum_1_quant > 2 * sum_2_quant
-  H = input("HAVING_CONDITION(H): ").strip()
-  return {"S": S, "n": n, "V": V, "F": F, "Pred": Pred, "H": H}
-            
+         
 def query():
     load_dotenv()
     print("Current Working Directory:", os.getcwd())
